@@ -339,5 +339,6 @@ if __name__ == '__main__':
 
     text = "<p>Who was Jim Henson</p>. <p>Jim Henson was a puppeteer.But he always using pytorch and java's code: <code>System.out.println()</code></p>"
 
-    ans = PreprocessPostContent().getPlainTxt(text)
+    ans = PreprocessPostContent().getPlainTxt(gold)
+
     print(ans)
