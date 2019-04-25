@@ -5,6 +5,7 @@ import re
 from textblob import TextBlob
 import preprocessor.tokenizer as tokenizer
 
+
 class PreprocessPostContent(object):
     code_snippet = re.compile(r"<pre>.*?</pre>")
     code_insider = re.compile(r"<code>.*?</code>")
@@ -74,7 +75,6 @@ class PreprocessPostContent(object):
     def remove_code(self, txt):
         cleaned = re.sub(self.code_snippet, "", txt)
         return cleaned
-
 
     def remove_equation(self, txt):
         cleaned = []
@@ -199,7 +199,7 @@ class PreprocessPostContent(object):
         txt = self.remove_quotation(txt)
         # print("atfer rm quotation=>",txt)
 
-        txt = self.remove_useless(txt)
+        # txt = self.remove_useless(txt)
         # print("after rm use=>",txt)
 
         # txt = self.remove_punctuation(txt)
@@ -217,24 +217,42 @@ class PreprocessPostContent(object):
             paragraphs.append(p)
         return paragraphs
 
-    def getPlainTxt(self, raw_txt):
-        # return a list of paragraphs of plain text
-        # filter code
+    # 过滤列表中单字符（标点）
+    def filter_wordlist(self, wordlist):
+        condition = lambda t: len(t) > 1 or t == 'I'
+        filter_list = list(filter(condition, wordlist))
+        return filter_list
+
+    # [ [word1, word2, ...], [word1, word2, ...], [word1, word2, ...], ... ]
+    def get_mul_para_wordlist_list(self, raw_txt):
+        # return a list of paragraphs of plain text(word list)
         txt = self.remove_code(raw_txt)
 
         paragraphs = self.getParagraphs(txt)
 
-        texts = []
+        wordlist_list = []
         for p in paragraphs:
             cleaned = self.__process(p)
             if len(cleaned.split()) < self.min_words_paragraph:
                 continue
 
-            text = self.filterNILStr(cleaned)
-            text = " ".join(tokenizer.tokenize(text))
-            texts.append(text)
+            wordlist = self.filterNILStr(cleaned)
+            wordlist = tokenizer.tokenize(wordlist)
+            wordlist = self.filter_wordlist(wordlist)
+            wordlist_list.append(wordlist)
 
-        return texts
+        return wordlist_list
+
+    # [word1, word2, ...]
+    def get_single_para_word_list(self, raw_txt):
+        # return a list of plain text(word list)
+        # filter code
+        txt = self.remove_code(raw_txt)
+        cleaned = self.__process(txt)
+        text = self.filterNILStr(cleaned)
+        word_list = tokenizer.tokenize(text)
+        word_list = self.filter_wordlist(word_list)
+        return word_list
 
 
 if __name__ == '__main__':
@@ -319,7 +337,7 @@ if __name__ == '__main__':
     # ans+=s
 
     ans2 = '''
-        <p>It is saied that Whenever a problem becomes solvable by a computer , people start arguing that it does not require intelligence . </p>
+        <p>It is saied that Whenever<code>code</code> a problem becomes solvable by a computer, people start arguing that it does not require intelligence . </p>
         <p>[CLS] "Whenever a problem becomes solvable by a computer , people start arguing that it does not require intelligence . [SEP] John McCarthy is often quoted : `` As soon as it works , no one calls it AI anymore '' ( Referenced in CACM )[SEP] ."</p> 
         
         <p>"One of my teachers in <code>jet.listen</code>college said that in the 1950 's , a professor was asked what he thought was intelligent for a machine . The professor reputedly answered that if a vending machine gave him the right change , that would be intelligent ."</p> 
@@ -339,6 +357,9 @@ if __name__ == '__main__':
 
     text = "<p>Who was Jim Henson</p>. <p>Jim Henson was a puppeteer.But he always using pytorch and java's code: <code>System.out.println()</code></p>"
 
-    ans = PreprocessPostContent().getPlainTxt(gold)
+    text = "I am a bot ,and he's my friend, i. . # AI Beginners Book"
+
+    ans = PreprocessPostContent().get_mul_para_wordlist_list(gold)
+    ans = PreprocessPostContent().get_single_para_word_list(text)
 
     print(ans)
