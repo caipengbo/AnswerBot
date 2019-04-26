@@ -2,6 +2,7 @@
 
 from formula import relevance
 
+
 class Post():
 
     def __init__(self, title_word_list, answer_list):
@@ -14,8 +15,3 @@ class Post():
 
     def __lt__(self, other):
         return self.score < other.score
-
-
-
-if __name__ == '__main__':
-    pass

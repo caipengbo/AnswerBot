@@ -1,0 +1,4 @@
+scikit-learn
+textblob
+gensim
+elasticsearch

@@ -262,6 +262,7 @@ def edge_punct_munge(s):
     s = EdgePunctRight_RE.sub(r"\1 \2\3", s)
     return s
 
+
 def unprotected_tokenize(s):
     return s.split()
 

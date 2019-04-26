@@ -8,7 +8,7 @@ def calculate_asymmetric(model, q_word_list, Q_word_list, idf_metric_dict):
         rel_list = [0]
         for Q_word in Q_word_list:
             try:
-                val = model.similarity(q_word, Q_word)
+                val = model.wv.similarity(q_word, Q_word)
             except:
                 val = 0
             rel_list.append(val)

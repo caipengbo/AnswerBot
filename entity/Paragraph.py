@@ -1,13 +1,12 @@
 # -*- UTF-8 -*-
 from formula import relevance
-from preprocessor.preprocessing import PreprocessPostContent
 
 
 class Paragraph():
     def __init__(self, raw_text, word_list, vote_score, position):
-        self.raw_text = raw_text # 带标签的，只经过<p>分段的数据
+        self.raw_text = raw_text  # 带标签的，只经过<p>分段的数据
         self.word_list = word_list
-        self.position = position # 第几段
+        self.position = position  # 第几段
         self.vote_score = vote_score
         self.relevance_score = 0
         self.entity_score = 0
