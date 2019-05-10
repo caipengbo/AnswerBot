@@ -15,13 +15,18 @@ class Element():
 
 
 def cal_mmr(n, top_n_paragraph_word_list, model, idf_metric_dict):
-    element_obj_list = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            sym_relevance = relevance.calculate_symmetric(model, top_n_paragraph_word_list[i].word_list,
-                                                          top_n_paragraph_word_list[j].word_list, idf_metric_dict)
-            element_obj_list.append(Element(sym_relevance, i, j))
-
+    # 有可能len(top_n_paragraph_word_list) < n
+    n = min(len(top_n_paragraph_word_list), n)
+    try: 
+        element_obj_list = []
+        for i in range(n):
+            for j in range(i + 1, n):
+                sym_relevance = relevance.calculate_symmetric(model, top_n_paragraph_word_list[i].word_list,
+                                                              top_n_paragraph_word_list[j].word_list, idf_metric_dict)
+                element_obj_list.append(Element(sym_relevance, i, j))
+    except:
+        print("Find Error: " + str(i) + ", " + str(j) )
+                
     return element_obj_list
 
 

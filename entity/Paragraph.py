@@ -61,10 +61,21 @@ class Paragraph():
             self.pos_score = 0
 
     def normalized(self, relevance_min, relevance_max, entropy_min, entropy_max, vote_min, vote_max):
-        self.relevance_score = (self.relevance_score - relevance_min) / (relevance_max - relevance_min)
-        self.infor_entropy = (self.infor_entropy - entropy_min) / (entropy_max - entropy_min)
-        self.vote_score = (self.vote_score - vote_min) / (vote_max - vote_min)
-
+        if relevance_max - relevance_min != 0:
+            self.relevance_score = (self.relevance_score - relevance_min) / (relevance_max - relevance_min)
+        else:
+            self.relevance_score = self.relevance_score - relevance_min
+            
+        if entropy_max - entropy_min != 0:
+            self.infor_entropy = (self.infor_entropy - entropy_min) / (entropy_max - entropy_min)
+        else:
+            self.infor_entropy = self.infor_entropy - entropy_min
+            
+        if vote_max - vote_min != 0:
+            self.vote_score = (self.vote_score - vote_min) / (vote_max - vote_min)
+        else:
+            self.vote_score = self.vote_score - vote_min
+        
     def cal_overall_score(self):
         self.overall_score += self.vote_score
         self.overall_score += self.relevance_score
